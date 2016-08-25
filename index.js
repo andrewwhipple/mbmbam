@@ -44,9 +44,31 @@ app.post('/parser', upload.array(), function(req, res) {
    //if (!req.body) return res.sendStatus(400);
     //var requestBody = "";
     
-    console.log(req.body.title);
+    /*console.log(req.body.title);
     console.log(counter);
-    counter++;
+    counter++;*/
+    
+    Episode.findOne({mp3: req.body.mp3}, function (err, episode) {
+        if (err) {
+            console.log(err);
+            return;
+        }
+        
+        if (!episode) {
+           //console.log("Here");
+           Episode.create({title: req.body.title, description: req.body.description, mp3: req.body.mp3, publication_date: Date(req.body.publication_date)}, function (err, newEpisode) {
+               if (err) {
+                   console.log(err);
+                   return;
+               } else {
+                   console.log(newEpisode);
+               }
+           });
+       } else {
+           console.log("Episode found apparently?");
+           console.log(episode);
+       }
+    });
    
     //console.log(req.body);
     
