@@ -26,7 +26,15 @@ app.engine('handlebars', hbs({defaultLayout: 'main'}));
 app.set('view engine', 'handlebars');
 
 app.get('/', function(req, res) {
-   res.render('index'); 
+   
+    Episode.find(function(err, episodes) {
+        if (err) {
+            res.send('Uh Oh, error!');
+            return;
+        }
+        res.render('index', {eps: episodes}); 
+    });
+ 
 });
 
 
