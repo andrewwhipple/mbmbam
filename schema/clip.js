@@ -9,6 +9,7 @@
 var mongoose = require('mongoose');
 
 var clipSchema = new mongoose.Schema({
+    id: String,
     title: String,     // User-gen title of the clip
     //episode_number: Number, //Number of the episode the clip is from
 	description: String, //User gen description of the clip

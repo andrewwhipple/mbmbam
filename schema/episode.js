@@ -13,6 +13,7 @@ var mongoose = require('mongoose');
  * this Schema:
  */
 var episodeSchema = new mongoose.Schema({
+    id: String,
     title: String,     // Title of the episode
     //episode_number: Number, //Number of the episode
 	description: String, //Episode's html description

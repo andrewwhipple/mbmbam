@@ -29,7 +29,7 @@ app.get('/', function(req, res) {
    
     Episode.find(function(err, episodes) {
         if (err) {
-            res.send('Uh Oh, error!');
+            res.sendStatus('500');
             return;
         }
         res.render('index', {eps: episodes}); 
@@ -37,52 +37,93 @@ app.get('/', function(req, res) {
  
 });
 
-
+app.get('/mbmbam/episode/:id', function(req, res) {
+    
+    console.log(req.params.id);
+    Episode.findOne({id: req.params.id}, function(err, episode) {
+       if (err) {
+           console.log(err);
+           res.sendStatus(404);
+           return;
+       } 
+        if (episode) {
+            Clip.find({mp3: episode.mp3}, function(err, clips) {
+                if (err) {
+                    console.log(err);
+                    res.sendStatus(500);
+                }
+                res.render('episode', {ep: episode, clips: clips});
+            });
+            
+            
+            
+        } else {
+            res.render('404');
+        }   
+    });
+    
+});
 
 var counter = 0;
 app.post('/parser', upload.array(), function(req, res) {
-    /*
-    
-    Something like if not find ep w/ this mp3, create a new episode
-    
-    
-    Episode.findOne({mp3: req.params.})
-    
-    */
-   //if (!req.body) return res.sendStatus(400);
-    //var requestBody = "";
-    
-    /*console.log(req.body.title);
-    console.log(counter);
-    counter++;*/
     
     Episode.findOne({mp3: req.body.mp3}, function (err, episode) {
         if (err) {
             console.log(err);
+            res.sendStatus(500);
             return;
         }
         
         if (!episode) {
-           //console.log("Here");
            Episode.create({title: req.body.title, description: req.body.description, mp3: req.body.mp3, publication_date: Date(req.body.publication_date)}, function (err, newEpisode) {
                if (err) {
                    console.log(err);
+                   res.sendStatus(500);
                    return;
                } else {
+                   newEpisode.id = newEpisode._id;
+                   
                    console.log(newEpisode);
+                   newEpisode.save();
+                   res.sendStatus(201);
+                   
                }
            });
        } else {
            console.log("Episode found apparently?");
            console.log(episode);
+           res.sendStatus(409);
        }
     });
    
     //console.log(req.body);
     
     //console.log(JSON.stringify(requestBody));
-    res.sendStatus(200);
+    //res.sendStatus(200);
 });
+
+app.post('/clip', upload.array(), function(req, res) {
+    //res.sendStatus(200);
+    
+
+    
+    Clip.create({title: req.body.title, description: req.body.description, mp3: req.body.mp3, in_point: req.body.in_point, out_point: req.body.out_point, user: req.body.user}, function( err, clip) {
+       if (err) {
+           console.log(err);
+           res.sendStatus(500);
+       } else {
+           clip.id = clip._id;
+           console.log(clip);
+           clip.save();
+           res.sendStatus(201);
+       } 
+        
+    });
+    
+
+    
+});
+
 app.listen(3000, function() {
    console.log('Server listening on port 3000'); 
 });

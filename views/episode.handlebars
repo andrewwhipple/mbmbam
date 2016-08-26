@@ -1,0 +1,21 @@
+<div>
+    <h1><a href='/mbmbam/episode/{{ep._id}}'>{{ep.title}}</a></h1>
+    <p>{{ep.publication_date}}</p>
+    <div>{{ep.description}}</div>
+    
+    <div>
+        <audio controls>
+            <source src='{{ep.mp3}}' type='audio/mpeg'>
+        </audio>
+    </div>
+</div>
+
+
+{{#each clips}}
+<div>
+    <h2>{{title}}</h2>
+    <div>{{description}}</div>
+
+</div>
+
+{{/each}}
